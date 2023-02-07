@@ -3,8 +3,9 @@
       "module": "commonjs",
       "declaration": true,
       "outDir": "./lib",
-      "strict": true
+      "strict": true,
+      "esModuleInterop": true,
     },
-    "include": ["src"],
+    "include": ["src", "example"],
     "exclude": ["node_modules", "**/__tests__/*", "src/*.test.ts"]
 }

@@ -1,18 +1,55 @@
-# zod-express-middleware
+# @stactorial/zod-express-middleware
+## Forked from [zod-express-middleware](https://github.com/Aquila169/zod-express-middleware)
 Middleware for [express](https://www.npmjs.com/package/express) that uses [zod](https://www.npmjs.com/package/zod) to make requests type-safe.
 
-<a href="https://www.npmjs.com/package/zod-express-middleware" rel="nofollow"><img alt="npm" src="https://img.shields.io/npm/v/zod-express-middleware"></a>
+<!-- <a href="https://www.npmjs.com/package/zod-express-middleware" rel="nofollow"><img alt="npm" src="https://img.shields.io/npm/v/zod-express-middleware"></a>
 <a href="https://www.npmjs.com/package/zod-express-middleware" rel="nofollow"><img alt="npm" src="https://img.shields.io/npm/dw/zod-express-middleware"></a>
 <a href="https://github.com/Aquila169/zod-express-middleware/actions/workflows/node.js.yml" rel="nofollow"><img alt="npm" src="https://github.com/Aquila169/zod-express-middleware/actions/workflows/node.js.yml/badge.svg"></a>
-<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/npm/l/zod-express-middleware" alt="License"></a>
+<a href="https://opensource.org/licenses/MIT" rel="nofollow"><img src="https://img.shields.io/npm/l/zod-express-middleware" alt="License"></a> -->
 
 ## Installation
 
 This package relies on [zod](https://www.npmjs.com/package/zod), [express](https://www.npmjs.com/package/express) and [@types/express](https://www.npmjs.com/package/@types/express). These have been added as peer dependencies so they can be upgraded independently of this package.
 
-[zod-express-middleware](https://www.npmjs.com/package/zod-express-middleware) can be installed using:
+[@stactorial/zod-express-middleware](https://www.npmjs.com/package/zod-express-middleware) can be installed using:
 
-`npm install zod-express-middleware`
+`npm install @stactorial/zod-express-middleware`
+
+
+## Stactorial Additions
+This fork (starting with v1.0.0) wraps the functions in `generateValidationFns` which allows for customization through the (optional) `config` object. Currently the only customization is the `errorFn` which (if included), replaces the default error handling.
+```typescript
+import generateValidationFns from "@stactorial/zod-express-middleware";
+
+const v = generateValidationFns({
+  errorFn(errors, res) {
+    res.status(400).json(errors);
+  },
+});
+// Then the middleware functions can be accessed like this:
+v.validateRequest({
+  params: z.object({
+    someQuery: z.string(),
+  }),
+})
+
+// OR
+
+const { validateRequest } = generateValidationFns({
+  errorFn(errors, res, next) {
+    next(errors[0].errors);
+  },
+});
+// Then the middleware functions can be accessed like this:
+validateRequest({
+  body: z.object({
+    hello: z.string(),
+  }),
+})
+```
+
+*The below documentation is unedited in the fork and remains the same and relevant.*
+The only exception being the need for instantiation via `generateValidationFns` to access the functions.
 
 ## Usage
 This package provides the `validateRequest` function, which can be used to validate the `.body`, `.query` and `.params` properties of an Express `Request`. Separate functions for each of these are also provided (`validateRequestBody`, `validateRequestQuery` and `validateRequestParams`). 
@@ -21,9 +58,7 @@ This package provides the `validateRequest` function, which can be used to valid
 ```typescript
 import { validateRequest } from 'zod-express-middleware';
 import { z } from 'zod';
-
-// app is an express app
-app.get("/", validateRequest({
+apvp.get("/", validateRequest({
     body: z.object({
       bodyKey: z.number(),
     }),
