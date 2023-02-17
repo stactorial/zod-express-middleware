@@ -44,6 +44,9 @@ export declare type TypedRequestQuery<TQuery extends ZodType<any, ZodTypeDef, an
   any,
   z.infer<TQuery>
 >;
+export declare type Controller<
+  T extends { params?: ZodSchema<any> | any; query?: ZodSchema<any> | any; body?: ZodSchema<any> | any },
+> = (req: TypedRequest<T['params'], T['query'], T['body']>, res: Response, next: NextFunction) => void | Promise<void>;
 
 type ErrorListItem = { type: 'Query' | 'Params' | 'Body'; errors: ZodError<any> };
 

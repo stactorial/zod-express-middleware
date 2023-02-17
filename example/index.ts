@@ -1,6 +1,6 @@
 import express, { ErrorRequestHandler, NextFunction } from 'express';
 import { z } from 'zod';
-import generateValidationFns from '../src';
+import generateValidationFns, { Controller } from '../src';
 
 const app = express();
 
@@ -45,18 +45,19 @@ app.use((req, res, next) => {
   next();
 });
 
-app.post(
-  '/',
-  validateRequest({
-    body: z.object({
-      hello: z.string(),
-    }),
+const schema = {
+  body: z.object({
+    hello: z.string(),
   }),
-  (req, res) => {
-    console.log('POST request to "/" was hit!');
-    res.json({ hello: req.body.hello });
-  },
-);
+};
+type schema = typeof schema;
+
+const controller: Controller<schema> = (req, res) => {
+  console.log('POST request to "/" was hit!');
+  res.json({ hello: req.body.hello });
+};
+
+app.post('/', validateRequest(schema), controller);
 
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
   console.log('error middleware');

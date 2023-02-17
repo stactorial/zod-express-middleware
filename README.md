@@ -17,6 +17,7 @@ This package relies on [zod](https://www.npmjs.com/package/zod), [express](https
 
 
 ## Stactorial Additions
+### generateValidationFns
 This fork (starting with v1.0.0) wraps the functions in `generateValidationFns` which allows for customization through the (optional) `config` object. Currently the only customization is the `errorFn` which (if included), replaces the default error handling.
 ```typescript
 import generateValidationFns from "@stactorial/zod-express-middleware";
@@ -47,9 +48,28 @@ validateRequest({
   }),
 })
 ```
+### Controller (new v1.1.0)
+If you would like to have your controller in a separate file instead of inline with your route declaration, you can type the function with `Controller` which takes a generic of your schema's type.
+```typescript
+const schema = {
+  body: z.object({
+    hello: z.string(),
+  }),
+};
+type schema = typeof schema;
 
+const controller: Controller<schema> = (req, res) => {
+  res.json({ hello: req.body.hello });
+};
+
+```
+
+---
 *The below documentation is unedited in the fork and remains the same and relevant.*
+
 The only exception being the need for instantiation via `generateValidationFns` to access the functions.
+
+---
 
 ## Usage
 This package provides the `validateRequest` function, which can be used to validate the `.body`, `.query` and `.params` properties of an Express `Request`. Separate functions for each of these are also provided (`validateRequestBody`, `validateRequestQuery` and `validateRequestParams`). 
